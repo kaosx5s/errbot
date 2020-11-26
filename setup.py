@@ -33,11 +33,12 @@ deps = ['webtest',
         'jinja2',
         'pyOpenSSL',
         'colorlog',
-        'markdown<3.0',  # rendering stuff, 3.0+ deprecates 'safe()'
+        'markdown>=3.3',
         'ansi',
         'Pygments>=2.0.2',
         'pygments-markdown-lexer>=0.1.0.dev39',  # sytax coloring to debug md
-        'dulwich>=0.19.16'  # python implementation of git
+        'dulwich>=0.19.16',  # python implementation of git
+        'deepmerge>=0.1.0',
         ]
 
 src_root = os.curdir
@@ -109,6 +110,7 @@ if __name__ == "__main__":
             'IRC': ['irc', ],
             'slack': ['slackclient>=1.0.5,<2.0', ],
             'slack-rtm': ['slackclient>=2.0', ],
+            'slack-events': ['slackclient>=2.0', 'slackeventsapi>=2.2'],
             'telegram': ['python-telegram-bot', ],
             'XMPP': ['slixmpp', 'pyasn1', 'pyasn1-modules'],
             ':python_version<"3.7"': ['dataclasses'],  # backward compatibility for 3.3->3.6 for dataclasses
@@ -118,6 +120,7 @@ if __name__ == "__main__":
         author="errbot.io",
         author_email="info@errbot.io",
         description="Errbot is a chatbot designed to be simple to extend with plugins written in Python.",
+        long_description_content_type="text/x-rst",
         long_description=''.join([read('README.rst'), '\n\n', changes]),
         license="GPL",
         keywords="xmpp irc slack hipchat gitter tox chatbot bot plugin chatops",

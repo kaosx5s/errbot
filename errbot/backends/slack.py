@@ -21,7 +21,7 @@ from errbot.rendering.ansiext import AnsiExtension, enable_format, IMTEXT_CHRS
 log = logging.getLogger(__name__)
 
 try:
-    from slackclient import SlackClient
+    from slackclient import WebClient
 except ImportError:
     log.exception("Could not start the Slack back-end")
     log.fatal(
@@ -64,7 +64,7 @@ def slack_markdown_converter(compact_output=False):
     """
     enable_format('imtext', IMTEXT_CHRS, borders=not compact_output)
     md = Markdown(output_format='imtext', extensions=[ExtraExtension(), AnsiExtension()])
-    md.preprocessors['LinkPreProcessor'] = LinkPreProcessor(md)
+    md.preprocessors.register(LinkPreProcessor(md), 'LinkPreProcessor', 30)
     md.stripTopLevelTags = False
     return md
 
@@ -151,6 +151,15 @@ class SlackPerson(Person):
         # Note: Don't use str(self) here because that will return
         # an incorrect format from SlackMUCOccupant.
         return f'@{self.username}'
+
+    @property
+    def email(self):
+        """Convert a Slack user ID to their user email"""
+        user = self._sc.server.users.find(self._userid)
+        if user is None:
+            log.error("Cannot find user with ID %s" % self._userid)
+            return "<%s>" % self._userid
+        return user.email
 
     @property
     def fullname(self):
@@ -364,7 +373,7 @@ class SlackBackend(ErrBot):
         log.debug('Converted bot_alt_prefixes: %s', self.bot_config.BOT_ALT_PREFIXES)
 
     def serve_once(self):
-        self.sc = SlackClient(self.token, proxies=self.proxies)
+        self.sc = WebClient(self.token, proxies=self.proxies)
 
         log.info('Verifying authentication token')
         self.auth = self.api_call("auth.test", raise_errors=False)
