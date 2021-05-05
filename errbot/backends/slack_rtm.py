@@ -857,6 +857,10 @@ class SlackBackendBase():
         Supports strings with the formats accepted by
         :func:`~extract_identifiers_from_string`.
         """
+        
+        if txtrep == "@":
+            txtrep = "@proe_bot"
+        
         log.debug('building an identifier from %s.', txtrep)
         username, userid, channelname, channelid = self.extract_identifiers_from_string(txtrep)
 
