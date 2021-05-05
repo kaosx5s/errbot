@@ -861,7 +861,11 @@ class SlackBackendBase():
         username, userid, channelname, channelid = self.extract_identifiers_from_string(txtrep)
 
         if userid is None and username is not None:
-            userid = self.username_to_userid(username)
+            log.debug('Getting userid for %s', username)
+            if username == 'proe_bot':
+                return 'W01AC5H76N5'
+            else:
+                userid = self.username_to_userid(username)
         if channelid is None and channelname is not None:
             channelid = self.channelname_to_channelid(channelname)
         if userid is not None and channelid is not None:
