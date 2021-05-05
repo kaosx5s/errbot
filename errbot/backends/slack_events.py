@@ -149,7 +149,6 @@ class SlackEventsBackend(SlackBackendBase, ErrBot):
         if not self.auth['ok']:
             raise SlackAPIResponseError(error=f"Couldn't authenticate with Slack. Server said: {self.auth['error']}")
         log.debug("Token accepted")
-        self._setup_event_callbacks()
 
         self.bot_identifier = SlackPerson(self.sc, self.auth['user_id'])
 
@@ -159,6 +158,9 @@ class SlackEventsBackend(SlackBackendBase, ErrBot):
 
         # Inject bot identity to alternative prefixes
         self.update_alternate_prefixes()
+
+        log.debug("Setting up callbacks...")
+        self._setup_event_callbacks()
 
         log.debug('Initialized, waiting for events')
         try:
